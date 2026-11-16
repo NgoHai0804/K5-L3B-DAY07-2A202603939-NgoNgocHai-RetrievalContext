@@ -273,13 +273,13 @@ python3 starter/agent_metrics.py --cases <cases.json> --traces <traces.json> --r
 
 **Checklist:**
 
-- [ ] Đã chạy agent thật, lưu model, tool call, tham số, kết quả, context, câu trả lời, citation, số lượt gọi, thời gian, chi phí, lỗi.
-- [ ] Đã đọc ≥5 câu test có đáp án và ≥2 câu thiếu evidence.
-- [ ] `cases.json`, `traces.json`, `reviews.json` đúng schema (ID duy nhất, không trùng).
-- [ ] Đã đọc **từng citation** xác nhận nguồn hỗ trợ (không chỉ ID hợp lệ).
-- [ ] Câu có đáp án bị từ chối đã chấm 0.
-- [ ] Đã báo qua `agent_metrics.py` và lưu `summary.json`.
-- [ ] Lỗi kết nối được báo riêng, không tính vào chất lượng.
+- [x] Đã chạy agent thật, lưu model, tool call, tham số, kết quả, context, câu trả lời, citation, số lượt gọi, thời gian, chi phí, lỗi.
+- [x] Đã đọc ≥5 câu test có đáp án và ≥2 câu thiếu evidence.
+- [x] `cases.json`, `traces.json`, `reviews.json` đúng schema (ID duy nhất, không trùng).
+- [x] Đã đọc **từng citation** xác nhận nguồn hỗ trợ (không chỉ ID hợp lệ).
+- [x] Câu có đáp án bị từ chối đã chấm 0.
+- [x] Đã báo qua `agent_metrics.py` và lưu `summary.json`.
+- [x] Lỗi kết nối được báo riêng, không tính vào chất lượng.
 
 ---
 

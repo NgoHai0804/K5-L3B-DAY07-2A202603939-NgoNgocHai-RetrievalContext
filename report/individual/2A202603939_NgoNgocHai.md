@@ -117,6 +117,27 @@ Lý do/trace từng câu nằm trong `starter/results/improvements-dev/traces.js
   - Lệnh chạy: `python starter/run_agent_benchmark.py --split dev --output starter/results/agent-dev --max-searches 3 --top-k 3 --budget 2500`
   - Thời gian: ~4–30 s/câu (độ trễ mạng OpenRouter, biến thiên). Chi phí: gpt-4o-mini + embedding rất thấp (≈ $0, vài nghìn token/câu).
 
+### Bước 8 — Đánh giá agent trên test và chấm nhãn
+
+Hai lần chạy thật trên **cùng 10 câu test** (8 có đáp án + 2 thiếu bằng chứng):
+- **Baseline (dense):** `--retriever dense --top-k 3 --budget 2500 --max-searches 2`.
+- **Cấu hình chọn (hybrid):** `--retriever hybrid --top-k 8 --budget 4500 --max-searches 2` (khớp I1 đã chốt).
+
+| Cấu hình / split | Tool use | Lượt gọi | Grounded 0/1/2 | TB /2 | Citation hợp lệ | Câu có citation | Abstention đúng | Từ chối nhầm |
+|---|---|---|---|---|---|---|---|---|
+| Baseline dense / test | 10/10 | 8×1, 2×2 | 3 / 1 / 4 | 1.125 | 5/6 (83.3%) | 5/5 | 2/2 | 3/8 |
+| **Cấu hình chọn hybrid / test** | 10/10 | 8×1, 2×2 | 2 / 1 / 5 | **1.375** | **7/7 (100%)** | 6/6 | 2/2 | **2/8** |
+
+- **Đã đọc thủ công 8 câu có đáp án + 2 câu thiếu bằng chứng** ở cả hai lần chạy, đối chiếu từng citation với nội dung chunk (script `starter/dump_agent_review.py`). Ví dụ: q05 citation `p13-c0` chứa đúng "Federal Supreme Court of Switzerland (FSCS)"; q25 (baseline) citation thứ nhất là bảng relations nên **không** hỗ trợ → chấm sai (support `[false, true]`), minh hoạ "ID hợp lệ chưa đủ".
+- **Câu có đáp án bị từ chối chấm 0:** baseline q09/q23/q27 = 0; cấu hình chọn q24/q27 = 0.
+- **Hai câu thiếu bằng chứng** (`u03`, `u04`): cả hai cấu hình đều abstain **đúng** (2/2).
+- **Lỗi kết nối:** 0 `provider_errors` ở cả hai lần chạy; driver ghi `status="error"` riêng nếu có, không trộn vào chất lượng.
+- **Chi phí:** mỗi lần chạy 10 câu × (embedding + 1–2 LLM call); endpoint embedding không trả usage/pricing nên không ghi USD; thời gian ~4–8 s/câu.
+- **Artifact:** `starter/results/agent-test/{agent_traces.json,reviews.json,summary.json}` và `starter/results/agent-test-baseline/{...}`. Lệnh tổng hợp:
+  `python starter/agent_metrics.py --cases data/cases.json --traces <traces.json> --reviews <reviews.json> --split test --output <summary.json>`
+
+**Kết luận agent:** cấu hình chọn (hybrid) tốt hơn baseline ở grounded answer (TB 1.375 vs 1.125), citation validity (7/7 vs 5/6) và ít từ chối nhầm hơn (2/8 vs 3/8), giữ abstention đúng 2/2.
+
 ## Thử thách nâng cao (nếu thực hiện)
 
 - Tài liệu, nguồn, quyền sử dụng, số trang và phiên bản:

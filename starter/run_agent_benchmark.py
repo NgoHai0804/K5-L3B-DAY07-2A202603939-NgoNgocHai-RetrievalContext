@@ -13,6 +13,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 from agentic import RealController, RealRetriever, run_agent  # noqa: E402
+from hybrid_retriever import HybridRetriever  # noqa: E402
 
 REPO = ROOT.parent
 
@@ -25,12 +26,14 @@ def main() -> None:
     parser.add_argument("--top-k", type=int, default=3)
     parser.add_argument("--budget", type=int, default=2500)
     parser.add_argument("--model", default=None)
+    parser.add_argument("--retriever", choices=("dense", "hybrid"), default="dense")
+    parser.add_argument("--candidate-k", type=int, default=20)
     args = parser.parse_args()
 
     cases = json.loads((REPO / "data" / "cases.json").read_text(encoding="utf-8"))
     selected = [c for c in cases if c["split"] == args.split]
 
-    retriever = RealRetriever()
+    retriever = HybridRetriever(candidate_k=args.candidate_k) if args.retriever == "hybrid" else RealRetriever()
     controller = RealController(model=args.model)
 
     traces = []
@@ -79,7 +82,8 @@ def main() -> None:
         "abstain": sum(t["status"] == "abstain" for t in traces),
         "error": sum(t["status"] == "error" for t in traces),
         "config": {"max_searches": args.max_searches, "top_k": args.top_k,
-                   "budget": args.budget, "model": controller.model},
+                   "budget": args.budget, "model": controller.model,
+                   "retriever": args.retriever, "candidate_k": args.candidate_k},
     }
     (args.output / "agent_summary.json").write_text(
         json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
