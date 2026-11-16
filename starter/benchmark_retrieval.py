@@ -11,7 +11,7 @@ REPO = ROOT.parent
 sys.path.insert(0, str(ROOT))
 
 from agentic import RealRetriever  # noqa: E402
-from baseline import TfidfIndex, hit, pack_context, tokenize  # noqa: E402
+from baseline import TfidfIndex, hit, pack_context  # noqa: E402
 
 
 def rrf(dense: list[dict[str, Any]], lexical: list[dict[str, Any]], k: int = 60) -> list[dict[str, Any]]:

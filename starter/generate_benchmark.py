@@ -1,11 +1,20 @@
 """Generate complete Day 7 benchmark questions (27 answerable + 4 unanswerable)."""
 import json
+import os
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = REPO_ROOT / "data"
-DAY6_Q_FILE = Path("D:/AI20K/Day06/lab/K5-L3B-DAY06-NgoNgocHai-2A202603939-DataIngestion/benchmark/questions.json")
+DAY6_DIR = Path(os.environ.get(
+    "DAY6_DIR",
+    "D:/AI20K/Day06/lab/K5-L3B-DAY06-NgoNgocHai-2A202603939-DataIngestion",
+))
+DAY6_Q_FILE = DAY6_DIR / "benchmark/questions.json"
 
+if not DAY6_Q_FILE.exists():
+    raise FileNotFoundError(
+        f"Day 6 questions not found at {DAY6_Q_FILE}. Set DAY6_DIR to the Day 6 repo root."
+    )
 day6_data = json.loads(DAY6_Q_FILE.read_text(encoding="utf-8"))
 raw_questions = day6_data["questions"]
 

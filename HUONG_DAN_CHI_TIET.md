@@ -295,21 +295,21 @@ python3 starter/agent_metrics.py --cases <cases.json> --traces <traces.json> --r
 
 **Checklist nộp bài (từ `SUBMISSION.md`):**
 
-- [ ] Code agent, ≥3 phương pháp retrieval (gồm dense), test và hướng dẫn chạy.
-- [ ] Embedding model, vector store, cách kết nối và dữ liệu được phép chia sẻ (hoặc cách cấp quyền/tái tạo).
-- [ ] Benchmark ≥20 câu có evidence và ≥4 câu thiếu evidence, đã chia dev/test.
-- [ ] Kết quả từng query và tool call; context, câu trả lời, citation, lỗi, thời gian, chi phí.
-- [ ] ≥2 cấu hình cải thiện; bảng benchmark, nhãn, phân tích lỗi và lý do chọn.
-- [ ] Báo cáo cá nhân đã điền (đúng tên `MSSV_HoTen.md`).
-- [ ] Người chấm xem được repo; **không** nộp dữ liệu mật/`.env`/API key/token.
+- [x] Code agent, ≥3 phương pháp retrieval (gồm dense), test và hướng dẫn chạy.
+- [x] Embedding model, vector store, cách kết nối và dữ liệu được phép chia sẻ (hoặc cách cấp quyền/tái tạo).
+- [x] Benchmark ≥20 câu có evidence và ≥4 câu thiếu evidence, đã chia dev/test.
+- [x] Kết quả từng query và tool call; context, câu trả lời, citation, lỗi, thời gian, chi phí.
+- [x] ≥2 cấu hình cải thiện; bảng benchmark, nhãn, phân tích lỗi và lý do chọn.
+- [x] Báo cáo cá nhân đã điền (đúng tên `MSSV_HoTen.md`).
+- [x] Người chấm xem được repo; **không** nộp dữ liệu mật/`.env`/API key/token.
 
 **Checklist báo cáo:**
 
-- [ ] Mục "Dữ liệu và benchmark" đầy đủ: nguồn, quyền, số trang/chunk, vector store, embedding model/phiên bản/chiều, agent model, cách chạy, chia dev/test, tiêu chí chấm.
-- [ ] Bảng "Retrieval và thử nghiệm" điền đủ cấu hình, phương pháp/top-k/filter/rerank/budget, giả thuyết, split, Hit@1, Evidence Hit@3, Context Evidence Rate, thời gian/chi phí.
-- [ ] Nêu 2 lỗi dev, nguyên nhân, cách thử, lý do chọn cấu hình.
-- [ ] Mục "Agent và đánh giá": tool, số lượt gọi, điều kiện dừng, chọn context, xử lý lỗi; bảng grounded answer, citation, abstention.
-- [ ] Ghi đường dẫn trace/nhãn, lệnh chạy, thời gian, chi phí, giới hạn.
+- [x] Mục "Dữ liệu và benchmark" đầy đủ: nguồn, quyền, số trang/chunk, vector store, embedding model/phiên bản/chiều, agent model, cách chạy, chia dev/test, tiêu chí chấm.
+- [x] Bảng "Retrieval và thử nghiệm" điền đủ cấu hình, phương pháp/top-k/filter/rerank/budget, giả thuyết, split, Hit@1, Evidence Hit@3, Context Evidence Rate, thời gian/chi phí.
+- [x] Nêu 2 lỗi dev, nguyên nhân, cách thử, lý do chọn cấu hình.
+- [x] Mục "Agent và đánh giá": tool, số lượt gọi, điều kiện dừng, chọn context, xử lý lỗi; bảng grounded answer, citation, abstention.
+- [x] Ghi đường dẫn trace/nhãn, lệnh chạy, thời gian, chi phí, giới hạn.
 
 ---
 

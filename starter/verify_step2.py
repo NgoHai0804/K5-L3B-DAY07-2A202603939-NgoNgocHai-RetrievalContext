@@ -9,7 +9,11 @@ from dotenv import load_dotenv
 # Load env from starter/.env or Day 6 .env
 load_dotenv(Path(__file__).parent / ".env")
 if not os.environ.get("OPENROUTER_API_KEY"):
-    day6_env = Path("D:/AI20K/Day06/lab/K5-L3B-DAY06-NgoNgocHai-2A202603939-DataIngestion/starter/.env")
+    day6_dir = Path(os.environ.get(
+        "DAY6_DIR",
+        "D:/AI20K/Day06/lab/K5-L3B-DAY06-NgoNgocHai-2A202603939-DataIngestion",
+    ))
+    day6_env = day6_dir / "starter/.env"
     if day6_env.exists():
         load_dotenv(day6_env)
 
