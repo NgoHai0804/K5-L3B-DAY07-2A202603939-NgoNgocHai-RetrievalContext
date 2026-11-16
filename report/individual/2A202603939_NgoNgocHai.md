@@ -34,15 +34,23 @@
 
 | Cấu hình | Phương pháp, top-k, filter, rerank, context budget | Giả thuyết / thay đổi | Split | Hit@1 | Evidence Hit@3 | Context Evidence Rate | Thời gian / chi phí |
 |---|---|---|---|---|---|---|---|
-| Baseline | TF-IDF lexical, top_k=3, không filter, budget 800 | Lexical baseline chuẩn của Day 7, tách từ từ điển NFC | dev | 13/19 (68.4%) | 17/19 (89.5%) | 13/19 (68.4%) | 1.02ms / $0 |
-| Phương pháp 2 | | | dev | | | | |
-| Phương pháp 3 | | | dev | | | | |
+| Baseline | TF-IDF lexical, top_k=3, filter theo metadata câu hỏi, context 2500 ký tự | Lexical baseline; NFC tokenization, cosine-normalized TF-IDF | dev | 13/19 (68.4%) | 17/19 (89.5%) | 17/19 (89.5%) | 1.264ms/query, index 22.41ms, API $0 |
+| Phương pháp 2 | Dense qwen3-embedding-8b + pgvector/cosine, top_k=3, filter theo metadata | Dense semantic nearest-neighbor trên index Day 6 | dev | 14/19 (73.7%) | 16/19 (84.2%) | 16/19 (84.2%) | 2606.447ms/query, 19 embedding API calls; USD chưa có usage/pricing xác thực |
+| Phương pháp 3 | Hybrid RRF (dense top-10 + TF-IDF top-10, k=60), fusion top_k=3, filter giống nhau | Reciprocal Rank Fusion hợp nhất thứ hạng, không cộng trực tiếp score khác thang đo | dev | 13/19 (68.4%) | 17/19 (89.5%) | 17/19 (89.5%) | 3140.604ms/query, 19 embedding API calls; USD chưa có usage/pricing xác thực |
 | Cải thiện 1 | | | dev | | | | |
 | Cải thiện 2 | | | dev | | | | |
 | Cấu hình đã chọn | | | test | | | | |
 | Baseline | | | test | | | | |
 
-Một cấu hình có thể đồng thời là phương pháp mới và cải thiện; giải thích rõ. Báo `n/N` và tỷ lệ, ghi đơn vị thời gian/chi phí, so sánh test sau khi chốt. Nêu hai lỗi dev, nguyên nhân, cách thử và lý do chọn cấu hình:
+**Điều kiện benchmark:** 3 phương pháp dùng cùng 386 Strategy A chunks, cùng 19 câu answerable dev, top-3 output và context budget 2500 ký tự. Mọi filter trong câu hỏi được áp dụng đồng nhất cho cả ba phương pháp. Hit@1 = câu có gold evidence trong top-1 / 19; Evidence Hit@3 = câu có gold evidence trong top-3 / 19; Context Evidence Rate = câu có gold evidence trong context đã pack / 19. Vì context 2500 đủ chứa top-3 Strategy A, Context Evidence Rate bằng Evidence Hit@3 trong lần chạy này.
+
+**Kết luận dev:** Hybrid RRF đạt Evidence Hit@3 17/19 (89.5%), bằng TF-IDF và cao hơn dense đơn lẻ (16/19); dense đạt Hit@1 cao nhất 14/19 (73.7%). Hybrid chưa cải thiện Evidence Hit@3 so với TF-IDF trong mẫu này; không tuyên bố thắng tuyệt đối. Chưa chạy test, giữ test độc lập để dùng sau khi chốt cấu hình.
+
+**Score/rank và chi phí:** Trace mỗi query chứa top-3 `id`, `text`, `source_id`, `source`, `page`, `metadata`, `score`, rank và hit. Hybrid trace còn lưu top-10 candidate ranking của dense và TF-IDF, score gốc, rank từng nguồn và RRF score. TF-IDF không gọi API. Dense/hybrid mỗi query gọi embedding API một lần; endpoint không cung cấp token usage/pricing trong response nên không ghi số USD suy đoán. Thời gian là latency truy vấn quan sát được (gồm embedding API và pgvector), không phải chỉ thời gian DB.
+
+**Cách tạo query và filter:** cả ba phương pháp dùng **nguyên văn câu hỏi** (không viết lại, không multi-hop). TF-IDF tokenize NFC + `casefold`; dense embed nguyên câu bằng qwen3-embedding-8b; hybrid lấy top-10 mỗi bên rồi RRF(k=60). Filter đọc từ trường `filter` do câu hỏi cung cấp (người dùng/ngữ cảnh, không suy từ gold), whitelist `document_id/section/year/source`, và áp dụng đồng nhất cho cả ba phương pháp.
+
+**Lệnh tái lập:** `python starter/benchmark_retrieval.py --split dev --output starter/results/retrieval-step5 --top-k 3 --candidate-k 10 --context-budget 2500` (PowerShell: đặt `$env:PYTHONUTF8="1"` và `$env:PSYCOPG_IMPL="python"` trước). Artifact: `starter/results/retrieval-step5/summary.json` và `traces.json` (57 trace, 19 câu × 3 phương pháp).
 
 ## Agent và đánh giá
 
@@ -53,8 +61,8 @@ Một cấu hình có thể đồng thời là phương pháp mới và cải th
   - Chọn context: `pack_context` khử trùng lặp theo `id`, ưu tiên chunk xuất hiện trước, giữ trong budget; chỉ gửi context tích lũy mới nhất để không nhân budget.
   - Xử lý lỗi: driver bắt exception từ provider/retriever và ghi `status="error"` riêng, **không** thay bằng kết quả giả.
 - **Kết quả chạy dev (21 câu: 19 có đáp án + 2 thiếu bằng chứng):**
-  - answered: **13/21**, abstain: **8/21**, error: **0**.
-  - Trong 6 câu có đáp án bị từ chối nhầm: q01, q06, q12, q17, q20, q21 (evidence không nằm trong top-3 nên agent trung thực abstain thay vì bịa).
+  - answered: **14/21**, abstain: **7/21**, error: **0** (lần chạy mới nhất).
+  - Trong 5 câu có đáp án bị từ chối nhầm: q01, q06, q12, q17, q21 (evidence không nằm trong top-3 nên agent trung thực abstain thay vì bịa).
   - 2/2 câu thiếu bằng chứng (`u01`, `u02`) đều abstain **đúng**.
 - **Ví dụ lỗi grounding đã đọc thủ công (q02):** câu hỏi hỏi "survey xác định bao nhiêu open research challenges" (đáp án đúng: **16**). Agent trả lời "five ... challenges" và cite chunk `p29-c0` — nhưng chunk này là bảng bị **cắt ở biên 500 ký tự**, chỉ còn 5 dòng đầu. Citation ID hợp lệ và chunk có 5 dòng ORC, nhưng con số "16" nằm ở trang 1 nên agent bị cuốn theo phần hiển thị hẹp → **đáp án sai dù citation hợp lệ**. Đây minh hoạ đúng cảnh báo "citation hợp lệ chưa đủ".
 - **Đường dẫn trace, lệnh chạy, thời gian và chi phí:**

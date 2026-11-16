@@ -181,14 +181,14 @@ python3 starter/baseline.py --chunks starter/data/converted/chunks.json --questi
 
 **Checklist:**
 
-- [ ] Có **≥3 phương pháp** thực sự khác nhau về cách tìm/xếp hạng.
-- [ ] Trong đó có **dense retrieval** dùng vector store Day 6.
-- [ ] Mỗi phương pháp chạy trên cùng corpus / index / câu hỏi / nhãn dev.
-- [ ] Kết quả có ID, nội dung, score/rank, nguồn, trang, metadata.
-- [ ] Đã báo Hit@1 và Evidence Hit@3 cùng định nghĩa, cùng cutoff.
-- [ ] Đã ghi filter, cách tạo query cho từng phương pháp.
-- [ ] Nếu dùng query viết lại / multi-hop: có trace từng bước.
-- [ ] Đã ghi thời gian và chi phí theo từng cấu hình.
+- [x] Có **≥3 phương pháp** thực sự khác nhau về cách tìm/xếp hạng.
+- [x] Trong đó có **dense retrieval** dùng vector store Day 6.
+- [x] Mỗi phương pháp chạy trên cùng corpus / index / câu hỏi / nhãn dev.
+- [x] Kết quả có ID, nội dung, score/rank, nguồn, trang, metadata.
+- [x] Đã báo Hit@1 và Evidence Hit@3 cùng định nghĩa, cùng cutoff.
+- [x] Đã ghi filter, cách tạo query cho từng phương pháp.
+- [x] Nếu dùng query viết lại / multi-hop: có trace từng bước.
+- [x] Đã ghi thời gian và chi phí theo từng cấu hình.
 
 ---
 
