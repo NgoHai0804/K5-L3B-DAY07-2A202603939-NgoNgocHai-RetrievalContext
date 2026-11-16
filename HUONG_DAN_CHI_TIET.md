@@ -234,11 +234,11 @@ python3 starter/baseline.py --chunks data/example_chunks.json --questions data/e
 
 **Checklist:**
 
-- [ ] Đã chốt cấu hình **trước** khi xem test.
-- [ ] Đã chạy baseline và cấu hình chọn trên cùng test.
-- [ ] Đã báo `n/N` và tỷ lệ, thời gian, chi phí theo từng cấu hình.
-- [ ] Nếu test từng bị dùng để chỉnh: đã tạo test mới (ghi rõ).
-- [ ] Không dùng kết quả mock để báo chất lượng.
+- [x] Đã chốt cấu hình **trước** khi xem test.
+- [x] Đã chạy baseline và cấu hình chọn trên cùng test.
+- [x] Đã báo `n/N` và tỷ lệ, thời gian, chi phí theo từng cấu hình.
+- [x] Nếu test từng bị dùng để chỉnh: đã tạo test mới (ghi rõ).
+- [x] Không dùng kết quả mock để báo chất lượng.
 
 ---
 

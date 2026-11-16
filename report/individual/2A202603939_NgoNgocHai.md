@@ -39,12 +39,12 @@
 | Phương pháp 3 | Hybrid RRF (dense top-10 + TF-IDF top-10, k=60), fusion top_k=3, filter giống nhau | Reciprocal Rank Fusion hợp nhất thứ hạng, không cộng trực tiếp score khác thang đo | dev | 13/19 (68.4%) | 17/19 (89.5%) | 17/19 (89.5%) | 3140.604ms/query, 19 embedding API calls; USD chưa có usage/pricing xác thực |
 | Cải thiện 1 (I1) | Hybrid RRF, candidate_k=20, top_k=8, context budget 4500 ký tự | Lấy sâu hơn để evidence hạng 4–8 lọt vào context, tăng Context Evidence Rate; đánh đổi context lớn hơn | dev | 14/19 (73.7%) | 17/19 (89.5%) | 18/19 (94.7%) | 19 embedding calls; mean 4138.5 ký tự (~1035 est tokens)/câu |
 | Cải thiện 2 (I2) | LLM query rewriting → hybrid RRF, candidate_k=10, top_k=5, context budget 3500 ký tự | Viết lại câu hỏi thành từ khóa kỳ vọng tăng Hit; **kết quả KHÔNG tăng mà giảm** | dev | 11/19 (57.9%) | 13/19 (68.4%) | 17/19 (89.5%) | +19 LLM rewrite calls (1241 tokens); mean 2869.9 ký tự (~717 est tokens)/câu |
-| Cấu hình đã chọn | | | test | | | | |
-| Baseline | | | test | | | | |
+| Cấu hình đã chọn (I1) | Hybrid RRF, candidate_k=20, top_k=8, context budget 4500 ký tự | Chốt theo tiêu chí trước khi test; đánh giá độc lập | test | 7/8 (87.5%) | 7/8 (87.5%) | 8/8 (100%) | mean 4150.2 ký tự (~1038 est tokens)/câu; 8 embedding calls; USD chưa xác thực |
+| Baseline (TF-IDF) | TF-IDF lexical, top_k=3, context budget 2500 ký tự | Mốc so sánh lexical trên cùng test | test | 6/8 (75.0%) | 6/8 (75.0%) | 6/8 (75.0%) | mean 1775.1 ký tự (~444 est tokens)/câu; API $0 |
 
 **Điều kiện benchmark:** 3 phương pháp dùng cùng 386 Strategy A chunks, cùng 19 câu answerable dev, top-3 output và context budget 2500 ký tự. Mọi filter trong câu hỏi được áp dụng đồng nhất cho cả ba phương pháp. Hit@1 = câu có gold evidence trong top-1 / 19; Evidence Hit@3 = câu có gold evidence trong top-3 / 19; Context Evidence Rate = câu có gold evidence trong context đã pack / 19. Vì context 2500 đủ chứa top-3 Strategy A, Context Evidence Rate bằng Evidence Hit@3 trong lần chạy này.
 
-**Kết luận dev:** Hybrid RRF đạt Evidence Hit@3 17/19 (89.5%), bằng TF-IDF và cao hơn dense đơn lẻ (16/19); dense đạt Hit@1 cao nhất 14/19 (73.7%). Hybrid chưa cải thiện Evidence Hit@3 so với TF-IDF trong mẫu này; không tuyên bố thắng tuyệt đối. Chưa chạy test, giữ test độc lập để dùng sau khi chốt cấu hình.
+**Kết luận dev:** Hybrid RRF đạt Evidence Hit@3 17/19 (89.5%), bằng TF-IDF và cao hơn dense đơn lẻ (16/19); dense đạt Hit@1 cao nhất 14/19 (73.7%). Hybrid chưa cải thiện Evidence Hit@3 so với TF-IDF trong mẫu này; không tuyên bố thắng tuyệt đối. Test được giữ độc lập và chỉ chạy ở Bước 7 sau khi chốt cấu hình.
 
 **Score/rank và chi phí:** Trace mỗi query chứa top-3 `id`, `text`, `source_id`, `source`, `page`, `metadata`, `score`, rank và hit. Hybrid trace còn lưu top-10 candidate ranking của dense và TF-IDF, score gốc, rank từng nguồn và RRF score. TF-IDF không gọi API. Dense/hybrid mỗi query gọi embedding API một lần; endpoint không cung cấp token usage/pricing trong response nên không ghi số USD suy đoán. Thời gian là latency truy vấn quan sát được (gồm embedding API và pgvector), không phải chỉ thời gian DB.
 
@@ -83,6 +83,21 @@ Lý do/trace từng câu nằm trong `starter/results/improvements-dev/traces.js
 **Kết luận Bước 6:** chọn **I1** làm cấu hình cải thiện (CER 18/19, giữ Hit@3 17/19), đánh đổi context lớn hơn; I2 bị loại vì giảm chất lượng dù tốn thêm LLM. Cả hai đều được ghi kết quả, kể cả kết quả âm.
 
 **Lệnh tái lập Bước 6:** `python starter/benchmark_improvements.py` (đặt `$env:PYTHONUTF8="1"`, `$env:PSYCOPG_IMPL="python"`). Artifact: `starter/results/improvements-dev/summary.json`, `traces.json`, `error_analysis.json`.
+
+### Bước 7 — Chốt cấu hình và đánh giá độc lập trên test
+
+- **Chốt trước khi xem test:** cấu hình được ghi vào `starter/results/step7-lock/CHOSEN_CONFIG.json` (đánh dấu `locked_before_test: true`) trước khi chạy test, theo tiêu chí đã công bố ở Bước 6. Test **chưa từng** dùng để chỉnh tham số, nên không cần tạo test mới.
+- **Cấu hình chốt:** `I1_deep_context` = hybrid RRF, `candidate_k=20`, `top_k=8`, context budget 4500 ký tự.
+- **Test set:** 10 câu test (8 câu có đáp án + 2 câu thiếu bằng chứng `u03`, `u04`). Retrieval metric tính trên 8 câu có đáp án; 2 câu thiếu bằng chứng để dành cho đánh giá agent ở Bước 8.
+
+| Cấu hình (test) | Hit@1 | Evidence Hit@3 | Context Evidence Rate | Chấm context 0/1/2 | Time / cost |
+|---|---|---|---|---|---|
+| Baseline TF-IDF (top_k=3, budget 2500) | 6/8 (75.0%) | 6/8 (75.0%) | 6/8 (75.0%) | 2 / 0 / 6 | ~0.01 ms/query (offline), $0 |
+| C0 hybrid reference (candidate 10, top_k=3, budget 2500) | 7/8 (87.5%) | 7/8 (87.5%) | 7/8 (87.5%) | 1 / 0 / 7 | ~2136.6 ms/query, 8 embedding calls |
+| **Cấu hình chọn I1** (candidate 20, top_k=8, budget 4500) | 7/8 (87.5%) | 7/8 (87.5%) | **8/8 (100%)** | **0 / 0 / 8** | ~2136.6 ms/query, 8 embedding calls |
+
+- **Kết luận test độc lập:** cấu hình chốt **vượt baseline** ở mọi chỉ số (Hit@1 7/8 vs 6/8; Hit@3 7/8 vs 6/8; CER 8/8 vs 6/8) và đưa **toàn bộ 8/8** câu test có đủ evidence + đúng nguồn vào context. Cái giá là context lớn hơn (~1038 vs ~444 est tokens/câu). Không dùng kết quả mock; mọi số liệu từ chạy thật (qwen3-embedding-8b + pgvector + TF-IDF).
+- **Lệnh tái lập Bước 7:** `python starter/evaluate_test.py` (đặt `$env:PYTHONUTF8="1"`, `$env:PSYCOPG_IMPL="python"`). Artifact: `starter/results/step7-test/summary.json`, `traces.json`.
 
 ## Agent và đánh giá
 
