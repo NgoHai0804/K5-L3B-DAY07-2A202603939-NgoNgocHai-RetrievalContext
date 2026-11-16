@@ -206,13 +206,13 @@ python3 starter/baseline.py --chunks starter/data/converted/chunks.json --questi
 
 **Checklist:**
 
-- [ ] Có ≥2 cấu hình cải thiện, mỗi cấu hình có giả thuyết riêng.
-- [ ] Đã đo và ghi kết quả của **tất cả** thử nghiệm, kể cả không cải thiện.
-- [ ] Đã đọc và phân tích ≥2 lỗi dev (nguyên nhân + đo lại sau thay đổi).
-- [ ] Báo Context Evidence Rate (`n/N` và tỷ lệ) cho các cấu hình.
-- [ ] Ghi context budget, đơn vị đo, cách chọn context, số candidate, token/chi phí.
-- [ ] Đã chấm context 0/1/2 và ghi lý do, trace, số câu mỗi mức.
-- [ ] Tiêu chí chọn cấu hình đã được **công bố trước** khi chạy test.
+- [x] Có ≥2 cấu hình cải thiện, mỗi cấu hình có giả thuyết riêng.
+- [x] Đã đo và ghi kết quả của **tất cả** thử nghiệm, kể cả không cải thiện.
+- [x] Đã đọc và phân tích ≥2 lỗi dev (nguyên nhân + đo lại sau thay đổi).
+- [x] Báo Context Evidence Rate (`n/N` và tỷ lệ) cho các cấu hình.
+- [x] Ghi context budget, đơn vị đo, cách chọn context, số candidate, token/chi phí.
+- [x] Đã chấm context 0/1/2 và ghi lý do, trace, số câu mỗi mức.
+- [x] Tiêu chí chọn cấu hình đã được **công bố trước** khi chạy test.
 
 ---
 

@@ -37,8 +37,8 @@
 | Baseline | TF-IDF lexical, top_k=3, filter theo metadata câu hỏi, context 2500 ký tự | Lexical baseline; NFC tokenization, cosine-normalized TF-IDF | dev | 13/19 (68.4%) | 17/19 (89.5%) | 17/19 (89.5%) | 1.264ms/query, index 22.41ms, API $0 |
 | Phương pháp 2 | Dense qwen3-embedding-8b + pgvector/cosine, top_k=3, filter theo metadata | Dense semantic nearest-neighbor trên index Day 6 | dev | 14/19 (73.7%) | 16/19 (84.2%) | 16/19 (84.2%) | 2606.447ms/query, 19 embedding API calls; USD chưa có usage/pricing xác thực |
 | Phương pháp 3 | Hybrid RRF (dense top-10 + TF-IDF top-10, k=60), fusion top_k=3, filter giống nhau | Reciprocal Rank Fusion hợp nhất thứ hạng, không cộng trực tiếp score khác thang đo | dev | 13/19 (68.4%) | 17/19 (89.5%) | 17/19 (89.5%) | 3140.604ms/query, 19 embedding API calls; USD chưa có usage/pricing xác thực |
-| Cải thiện 1 | | | dev | | | | |
-| Cải thiện 2 | | | dev | | | | |
+| Cải thiện 1 (I1) | Hybrid RRF, candidate_k=20, top_k=8, context budget 4500 ký tự | Lấy sâu hơn để evidence hạng 4–8 lọt vào context, tăng Context Evidence Rate; đánh đổi context lớn hơn | dev | 14/19 (73.7%) | 17/19 (89.5%) | 18/19 (94.7%) | 19 embedding calls; mean 4138.5 ký tự (~1035 est tokens)/câu |
+| Cải thiện 2 (I2) | LLM query rewriting → hybrid RRF, candidate_k=10, top_k=5, context budget 3500 ký tự | Viết lại câu hỏi thành từ khóa kỳ vọng tăng Hit; **kết quả KHÔNG tăng mà giảm** | dev | 11/19 (57.9%) | 13/19 (68.4%) | 17/19 (89.5%) | +19 LLM rewrite calls (1241 tokens); mean 2869.9 ký tự (~717 est tokens)/câu |
 | Cấu hình đã chọn | | | test | | | | |
 | Baseline | | | test | | | | |
 
@@ -51,6 +51,38 @@
 **Cách tạo query và filter:** cả ba phương pháp dùng **nguyên văn câu hỏi** (không viết lại, không multi-hop). TF-IDF tokenize NFC + `casefold`; dense embed nguyên câu bằng qwen3-embedding-8b; hybrid lấy top-10 mỗi bên rồi RRF(k=60). Filter đọc từ trường `filter` do câu hỏi cung cấp (người dùng/ngữ cảnh, không suy từ gold), whitelist `document_id/section/year/source`, và áp dụng đồng nhất cho cả ba phương pháp.
 
 **Lệnh tái lập:** `python starter/benchmark_retrieval.py --split dev --output starter/results/retrieval-step5 --top-k 3 --candidate-k 10 --context-budget 2500` (PowerShell: đặt `$env:PYTHONUTF8="1"` và `$env:PSYCOPG_IMPL="python"` trước). Artifact: `starter/results/retrieval-step5/summary.json` và `traces.json` (57 trace, 19 câu × 3 phương pháp).
+
+### Bước 6 — Cấu hình cải thiện trên dev và phân tích lỗi
+
+**Tiêu chí chọn cấu hình (công bố trước khi chạy test):** ưu tiên (1) Context Evidence Rate cao nhất → (2) Evidence Hit@3 cao nhất → (3) chi phí/thời gian thấp nhất. Test **chưa chạy** ở bước này.
+
+**Baseline so sánh (C0):** hybrid RRF top_k=3, candidate_k=10, context budget 2500 ký tự. Kết quả: Hit@1 14/19, Evidence Hit@3 17/19, Context Evidence Rate 17/19.
+
+**Cấu hình I1 — "ngữ cảnh sâu hơn":** cùng hybrid RRF nhưng candidate_k=20, top_k=8, budget 4500 ký tự.
+- Giả thuyết: giữ nhiều candidate hơn để evidence hạng 4–8 vào context cuối, tăng Context Evidence Rate; đánh đổi context lớn hơn.
+- Kết quả: Hit@1 14/19, Evidence Hit@3 17/19, **Context Evidence Rate 18/19 (94.7%, tăng +1 câu)**; context trung bình 4138.5 ký tự (~1035 est tokens) so với 1761.5 ký tự (~440 est tokens) của C0. Đây là cấu hình cải thiện rõ rệt về context với chi phí context tăng ~2.3×.
+
+**Cấu hình I2 — "viết lại câu hỏi (query rewriting)":** LLM (`openai/gpt-4o-mini`) viết lại câu hỏi thành query từ khóa, rồi hybrid RRF top_k=5, budget 3500 ký tự.
+- Giả thuyết: câu hỏi diễn đạt dài/thiếu ngữ cảnh sẽ retrieve tốt hơn sau khi rút thành từ khóa.
+- Kết quả: Hit@1 11/19, Evidence Hit@3 **13/19 (giảm so với 17/19)**, Context Evidence Rate 17/19. **Không cải thiện** — viết lại làm mất ngữ cảnh cụ thể (tên dataset, con số), nhất là các câu cần khớp chính xác. Chi phí thêm 19 LLM call (1241 token) và ~2870 ký tự context/câu. Ghi nhận là thử nghiệm thất bại, không lược bỏ.
+
+**Chấm context dev theo thang 0/1/2** (0 = không evidence; 1 = có nhưng thiếu nguồn/điều kiện; 2 = đủ evidence và đúng nguồn):
+
+| Cấu hình | 0 | 1 | 2 | Context Evidence Rate |
+|---|---:|---:|---:|---|
+| C0 hybrid baseline | 2 | 0 | 17 | 17/19 (89.5%) |
+| I1 deep context | 1 | 0 | 18 | 18/19 (94.7%) |
+| I2 rewrite hybrid | 2 | 0 | 17 | 17/19 (89.5%) |
+
+Lý do/trace từng câu nằm trong `starter/results/improvements-dev/traces.json` (trường `context_grade`, `context_reason`, `context_ids`). Không có câu nào ở mức 1 trong mẫu này.
+
+**Hai lỗi dev được đọc và đo lại** (chi tiết `starter/results/improvements-dev/error_analysis.json`):
+1. **q19** ("Which benchmark suite assesses NLP models across several legal tasks such as ECHR, SCOTUS and LEDGAR?"): ở C0 evidence **không vào top-3** (context grade 0). Nguyên nhân: evidence đứng hạng 4–8 nên top-3 hụt. Sau khi đổi sang **I1** (top-8, budget 4500), evidence vào context → **grade 2**. Đo lại: CER toàn cục tăng 17→18.
+2. **q02** ("How many open research challenges does the survey identify?", đáp án 16): ở C0 evidence **không vào top-3** (grade 0); I1 vẫn grade 0 (evidence không vào top-8). Nguyên nhân: câu hỏi ngắn, từ khóa "challenges" khớp mạnh với bảng tóm tắt trang 29 thay vì câu "sixteen open research challenges" ở trang 1. Khi **I2** viết lại "open research challenges survey identify", evidence vào context → grade 2 cho riêng câu này, nhưng I2 lại làm hỏng nhiều câu khác (Hit@3 13/19). Vì vậy không chọn I2; ghi nhận đây là đánh đổi cục bộ, không phải cải thiện tổng thể.
+
+**Kết luận Bước 6:** chọn **I1** làm cấu hình cải thiện (CER 18/19, giữ Hit@3 17/19), đánh đổi context lớn hơn; I2 bị loại vì giảm chất lượng dù tốn thêm LLM. Cả hai đều được ghi kết quả, kể cả kết quả âm.
+
+**Lệnh tái lập Bước 6:** `python starter/benchmark_improvements.py` (đặt `$env:PYTHONUTF8="1"`, `$env:PSYCOPG_IMPL="python"`). Artifact: `starter/results/improvements-dev/summary.json`, `traces.json`, `error_analysis.json`.
 
 ## Agent và đánh giá
 
