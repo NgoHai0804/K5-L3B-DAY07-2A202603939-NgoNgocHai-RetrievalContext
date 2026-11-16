@@ -144,14 +144,21 @@
     "split": "dev",
     "question": "In the Indian legal NLP survey, how many Supreme Court judgements were used to find similar cases in the FIRE 2019 dataset?",
     "answerable": true,
-    "expected_behavior": "search_and_answer"
+    "expected_behavior": "search_and_answer",
+    "filter": {
+      "document_id": "legal-nlp-india-survey-2107.06056"
+    }
   },
   {
     "id": "q22",
     "split": "dev",
     "question": "In the Indian legal NLP survey's summarisation work, who created the summaries of Supreme Court judgements from 1950 to 1994?",
     "answerable": true,
-    "expected_behavior": "search_and_answer"
+    "expected_behavior": "search_and_answer",
+    "filter": {
+      "document_id": "legal-nlp-india-survey-2107.06056",
+      "section": "summary_generation"
+    }
   },
   {
     "id": "q23",
@@ -165,14 +172,22 @@
     "split": "test",
     "question": "In the Indian legal NLP survey's reasoning tasks, what does predicting relevant acts based on case facts return for a description of a theft?",
     "answerable": true,
-    "expected_behavior": "search_and_answer"
+    "expected_behavior": "search_and_answer",
+    "filter": {
+      "document_id": "legal-nlp-india-survey-2107.06056",
+      "section": "reasoning"
+    }
   },
   {
     "id": "q25",
     "split": "test",
     "question": "In the Indian legal NLP survey's case-similarity section, how is finding similar cases currently described?",
     "answerable": true,
-    "expected_behavior": "search_and_answer"
+    "expected_behavior": "search_and_answer",
+    "filter": {
+      "document_id": "legal-nlp-india-survey-2107.06056",
+      "section": "case_similarity"
+    }
   },
   {
     "id": "q26",

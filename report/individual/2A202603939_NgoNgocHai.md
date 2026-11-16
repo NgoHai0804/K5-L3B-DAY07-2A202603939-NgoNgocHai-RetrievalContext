@@ -46,16 +46,21 @@ Một cấu hình có thể đồng thời là phương pháp mới và cải th
 
 ## Agent và đánh giá
 
-- Tool, số lượt gọi, điều kiện dừng, cách chọn context và xử lý lỗi:
-
-| Cấu hình / split | Tool use | Số lượt gọi | Grounded answer 0/1/2 và trung bình | Citation hợp lệ | Câu có citation | Abstention đúng | Từ chối nhầm |
-|---|---|---|---|---|---|---|---|
-
-| Query ID | Loại câu | Tool call và kết quả | Câu trả lời và citation | Nhãn, lý do |
-|---|---|---|---|---|
-
-- Đường dẫn trace, nhãn, lệnh chạy, thời gian và chi phí:
-- Kết quả trước/sau, ví dụ lỗi, đánh đổi và giới hạn:
+- **Tool, số lượt gọi, điều kiện dừng, cách chọn context và xử lý lỗi:**
+  - Agent model: `openai/gpt-4o-mini` qua OpenRouter (nhiệt độ 0.0, ép `response_format=json_object`).
+  - Tool duy nhất: `Retriever.search` (dense, embedding thật `qwen/qwen3-embedding-8b`, truy vấn pgvector Day 6, hỗ trợ `filters` metadata).
+  - Vòng lặp `run_agent`: tối đa `max_searches=3` lượt tìm; `top_k=3`; context budget `2500` ký tự. Điều kiện dừng: model trả `answer` có citation hợp lệ (thành công), hoặc hết lượt / context rỗng / citation không hợp lệ → **abstain**.
+  - Chọn context: `pack_context` khử trùng lặp theo `id`, ưu tiên chunk xuất hiện trước, giữ trong budget; chỉ gửi context tích lũy mới nhất để không nhân budget.
+  - Xử lý lỗi: driver bắt exception từ provider/retriever và ghi `status="error"` riêng, **không** thay bằng kết quả giả.
+- **Kết quả chạy dev (21 câu: 19 có đáp án + 2 thiếu bằng chứng):**
+  - answered: **13/21**, abstain: **8/21**, error: **0**.
+  - Trong 6 câu có đáp án bị từ chối nhầm: q01, q06, q12, q17, q20, q21 (evidence không nằm trong top-3 nên agent trung thực abstain thay vì bịa).
+  - 2/2 câu thiếu bằng chứng (`u01`, `u02`) đều abstain **đúng**.
+- **Ví dụ lỗi grounding đã đọc thủ công (q02):** câu hỏi hỏi "survey xác định bao nhiêu open research challenges" (đáp án đúng: **16**). Agent trả lời "five ... challenges" và cite chunk `p29-c0` — nhưng chunk này là bảng bị **cắt ở biên 500 ký tự**, chỉ còn 5 dòng đầu. Citation ID hợp lệ và chunk có 5 dòng ORC, nhưng con số "16" nằm ở trang 1 nên agent bị cuốn theo phần hiển thị hẹp → **đáp án sai dù citation hợp lệ**. Đây minh hoạ đúng cảnh báo "citation hợp lệ chưa đủ".
+- **Đường dẫn trace, lệnh chạy, thời gian và chi phí:**
+  - Trace: `starter/results/agent-dev/agent_traces.json` (đầy đủ events: search/query/context/context_ids/answer/citation/error) và `agent_summary.json`.
+  - Lệnh chạy: `python starter/run_agent_benchmark.py --split dev --output starter/results/agent-dev --max-searches 3 --top-k 3 --budget 2500`
+  - Thời gian: ~4–30 s/câu (độ trễ mạng OpenRouter, biến thiên). Chi phí: gpt-4o-mini + embedding rất thấp (≈ $0, vài nghìn token/câu).
 
 ## Thử thách nâng cao (nếu thực hiện)
 

@@ -87,13 +87,16 @@ print(f"Wrote {len(unanswerable_questions)} unanswerable questions to data/unans
 # Write cases.json for agent_metrics.py (all 31 questions)
 cases = []
 for q in answerable_questions:
-    cases.append({
+    item = {
         "id": q["id"],
         "split": q["split"],
         "question": q["question"],
         "answerable": True,
         "expected_behavior": "search_and_answer"
-    })
+    }
+    if q.get("filter"):
+        item["filter"] = q["filter"]
+    cases.append(item)
 for u in unanswerable_questions:
     cases.append({
         "id": u["id"],

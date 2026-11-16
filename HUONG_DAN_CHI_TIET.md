@@ -143,15 +143,15 @@ python3 starter/baseline.py --chunks starter/data/converted/chunks.json --questi
 
 **Checklist:**
 
-- [ ] `Controller.decide` gọi model thật (không mock khi chạy benchmark).
-- [ ] `Retriever.search` truy vấn vector store Day 6 thật, trả tối đa `top_k` chunk ID **duy nhất**.
-- [ ] Agent dùng ≥1 tool truy xuất; hỗ trợ nhiều tool/nhiều lượt nếu cần.
-- [ ] Có điều kiện dừng và giới hạn vòng lặp (ghi rõ lý do).
-- [ ] Đã bàn giao được chương trình nối `run_agent` (hoặc kiến trúc nhiều tool tương đương).
-- [ ] Trace lưu đủ: tool call, tham số, query, kết quả, context cuối, câu trả lời, citation, lỗi.
-- [ ] Agent trả lời có `[chunk-id]` hoặc abstain khi thiếu bằng chứng.
-- [ ] Đã đọc thủ công xác nhận citation **thực sự hỗ trợ** câu trả lời (không chỉ kiểm tra ID hợp lệ).
-- [ ] Lỗi kết nối được báo riêng, không bị thay bằng kết quả giả.
+- [x] `Controller.decide` gọi model thật (không mock khi chạy benchmark).
+- [x] `Retriever.search` truy vấn vector store Day 6 thật, trả tối đa `top_k` chunk ID **duy nhất**.
+- [x] Agent dùng ≥1 tool truy xuất; hỗ trợ nhiều tool/nhiều lượt nếu cần.
+- [x] Có điều kiện dừng và giới hạn vòng lặp (ghi rõ lý do).
+- [x] Đã bàn giao được chương trình nối `run_agent` (hoặc kiến trúc nhiều tool tương đương).
+- [x] Trace lưu đủ: tool call, tham số, query, kết quả, context cuối, câu trả lời, citation, lỗi.
+- [x] Agent trả lời có `[chunk-id]` hoặc abstain khi thiếu bằng chứng.
+- [x] Đã đọc thủ công xác nhận citation **thực sự hỗ trợ** câu trả lời (không chỉ kiểm tra ID hợp lệ).
+- [x] Lỗi kết nối được báo riêng, không bị thay bằng kết quả giả.
 
 ---
 
