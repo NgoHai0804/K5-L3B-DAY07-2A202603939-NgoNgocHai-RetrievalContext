@@ -1,0 +1,34 @@
+[
+  {
+    "id": "u01",
+    "split": "dev",
+    "question": "Which deep reinforcement learning framework does the survey recommend for drafting Vietnamese commercial contracts?",
+    "answerable": false,
+    "expected_behavior": "search_and_abstain",
+    "absence_reason": "Bộ tài liệu chỉ khảo sát các tập dữ liệu và mô hình cho tiếng Anh, tiếng Trung, tiếng Đức và tiếng Ấn Độ; không có nội dung về soạn thảo hợp đồng thương mại Việt Nam."
+  },
+  {
+    "id": "u02",
+    "split": "dev",
+    "question": "What is the fine amount in Euros for violating GDPR Article 83 according to the legal NLP survey?",
+    "answerable": false,
+    "expected_behavior": "search_and_abstain",
+    "absence_reason": "Bài survey tập trung vào các bài toán NLP, dataset và mô hình xử lý ngôn ngữ trong luật, không trích dẫn mức phạt chi tiết bằng Euro theo Điều 83 GDPR."
+  },
+  {
+    "id": "u03",
+    "split": "test",
+    "question": "What is the token limit of the Japanese Supreme Court judgment prediction model introduced in 2025?",
+    "answerable": false,
+    "expected_behavior": "search_and_abstain",
+    "absence_reason": "Hai tài liệu survey được công bố vào năm 2024 và 2021; không chứa mô hình dự đoán bản án Tòa án Tối cao Nhật Bản năm 2025."
+  },
+  {
+    "id": "u04",
+    "split": "test",
+    "question": "How many French penal code articles were annotated for the LeXmart reasoning benchmark?",
+    "answerable": false,
+    "expected_behavior": "search_and_abstain",
+    "absence_reason": "Khảo sát chỉ đánh giá các benchmark như JEC-QA (Trung Quốc), CaseHOLD, LegalBench (Mỹ), và các benchmark luật Ấn Độ; không có benchmark LeXmart hay bộ luật hình sự Pháp."
+  }
+]

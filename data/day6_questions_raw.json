@@ -1,0 +1,260 @@
+[
+  {
+    "id": "q01",
+    "split": "dev",
+    "question": "How many studies did the survey review, and how many were kept after manual filtering?",
+    "expected_answer": "154 studies reviewed; 131 kept after manual filtering.",
+    "gold_source_id": "nlp-legal-survey-2410.21306",
+    "gold_page": 1,
+    "evidence_quote": "reviewing 154 studies, with a final selection of 131 after manual filtering"
+  },
+  {
+    "id": "q02",
+    "split": "dev",
+    "question": "How many open research challenges does the survey identify?",
+    "expected_answer": "Sixteen (16) open research challenges.",
+    "gold_source_id": "nlp-legal-survey-2410.21306",
+    "gold_page": 1,
+    "evidence_quote": "sixteen open research challenges"
+  },
+  {
+    "id": "q03",
+    "split": "dev",
+    "question": "Which two academic databases were searched for the systematic review?",
+    "expected_answer": "Google Scholar and IEEE Xplore.",
+    "gold_source_id": "nlp-legal-survey-2410.21306",
+    "gold_page": 9,
+    "evidence_quote": "a systematic search across two academic databases"
+  },
+  {
+    "id": "q04",
+    "split": "dev",
+    "question": "How many multiple-choice questions does the JEC-QA dataset contain?",
+    "expected_answer": "26,365 multiple-choice questions from the National Judicial Examination of China.",
+    "gold_source_id": "nlp-legal-survey-2410.21306",
+    "gold_page": 10,
+    "evidence_quote": "JEC-QA, a dataset with 26,365 multiple-choice questions from the National Judicial"
+  },
+  {
+    "id": "q05",
+    "split": "test",
+    "question": "Which court does the multilingual LJP dataset with over 85,000 cases come from?",
+    "expected_answer": "The Federal Supreme Court of Switzerland (FSCS).",
+    "gold_source_id": "nlp-legal-survey-2410.21306",
+    "gold_page": 13,
+    "evidence_quote": "a multilingual LJP dataset from the Federal Supreme Court of Switzerland (FSCS),"
+  },
+  {
+    "id": "q06",
+    "split": "dev",
+    "question": "Which dataset of legal provisions from US contracts is introduced for text classification?",
+    "expected_answer": "LEDGAR, an 846,000-provision multi-label corpus from US SEC contracts.",
+    "gold_source_id": "nlp-legal-survey-2410.21306",
+    "gold_page": 15,
+    "evidence_quote": "introduce LEDGAR, a multi-label corpus of legal provisions from contracts"
+  },
+  {
+    "id": "q07",
+    "split": "dev",
+    "question": "Which abstractive summarisation dataset targets US federal civil rights lawsuits?",
+    "expected_answer": "Multi-LexSum (40,000 source documents and 9,000 expert-written summaries).",
+    "gold_source_id": "nlp-legal-survey-2410.21306",
+    "gold_page": 17,
+    "evidence_quote": "Shen et al. [120] introduce Multi-LexSum, an abstractive summarisation dataset tailored for the US federal civil rights"
+  },
+  {
+    "id": "q08",
+    "split": "dev",
+    "question": "About how many sentences and tokens does the German legal NER corpus contain?",
+    "expected_answer": "About 67,000 sentences and more than two million tokens.",
+    "gold_source_id": "nlp-legal-survey-2410.21306",
+    "gold_page": 18,
+    "evidence_quote": "drawn from federal court decisions, comprising about 67,000"
+  },
+  {
+    "id": "q09",
+    "split": "test",
+    "question": "How large is the MultiLegalPile corpus?",
+    "expected_answer": "689 GB, spanning 17 jurisdictions across 24 languages.",
+    "gold_source_id": "nlp-legal-survey-2410.21306",
+    "gold_page": 24,
+    "evidence_quote": "the MultiLegalPile, the largest open-source multilingual legal corpus available, totalling 689"
+  },
+  {
+    "id": "q10",
+    "split": "dev",
+    "question": "How big is the Pile of Law collection?",
+    "expected_answer": "A 256 GB dataset of open-source English-language legal and administrative data.",
+    "gold_source_id": "nlp-legal-survey-2410.21306",
+    "gold_page": 24,
+    "evidence_quote": "the first at-scale legal text collection, containing a 256 GB dataset of"
+  },
+  {
+    "id": "q11",
+    "split": "dev",
+    "question": "Which language model is adapted for long Chinese legal texts using long-document attention?",
+    "expected_answer": "Lawformer, a Longformer-based language model for Chinese legal texts.",
+    "gold_source_id": "nlp-legal-survey-2410.21306",
+    "gold_page": 24,
+    "evidence_quote": "Xiao et al. [140] introduce Lawformer, a Longformer-based [10] LM adapted for Chinese legal texts, designed to"
+  },
+  {
+    "id": "q12",
+    "split": "dev",
+    "question": "Which legal LLM is built on the 7 billion parameter Mistral architecture?",
+    "expected_answer": "SaulLM-7B.",
+    "gold_source_id": "nlp-legal-survey-2410.21306",
+    "gold_page": 25,
+    "evidence_quote": "introduce SaulLM-7B, a novel LLM specifically designed for legal text comprehension and"
+  },
+  {
+    "id": "q13",
+    "split": "dev",
+    "question": "What does the survey say about the use of RLHF in the legal domain?",
+    "expected_answer": "It is scarce; only one peer-reviewed work explores it.",
+    "gold_source_id": "nlp-legal-survey-2410.21306",
+    "gold_page": 27,
+    "evidence_quote": "The use of RLHF within the legal domain is notably scarce"
+  },
+  {
+    "id": "q14",
+    "split": "dev",
+    "question": "Why does the survey say RAG is particularly relevant for legal documents?",
+    "expected_answer": "Legal documents are lengthy with many cross-references and complex structures, causing LLM hallucination.",
+    "gold_source_id": "nlp-legal-survey-2410.21306",
+    "gold_page": 29,
+    "evidence_quote": "The legal domain presents particular challenges because documents are"
+  },
+  {
+    "id": "q15",
+    "split": "dev",
+    "question": "What example does the survey give for punctuation changing the legal meaning of a contract?",
+    "expected_answer": "A single comma (Rogers Communications vs Bell Aliant, 2006) allowed early cancellation.",
+    "gold_source_id": "nlp-legal-survey-2410.21306",
+    "gold_page": 5,
+    "evidence_quote": "where a single comma in the English version of a termination clause was interpreted to permit early"
+  },
+  {
+    "id": "q16",
+    "split": "test",
+    "question": "What hallucination rate for legal content do LLMs reach in some cases, according to the survey?",
+    "expected_answer": "Up to 58% in some cases.",
+    "gold_source_id": "nlp-legal-survey-2410.21306",
+    "gold_page": 8,
+    "evidence_quote": "hallucinate legal content at high rates—up to 58% in some cases,"
+  },
+  {
+    "id": "q17",
+    "split": "dev",
+    "question": "At what percentile on the Uniform Bar Exam was GPT-4 reported to pass?",
+    "expected_answer": "Near the 90th percentile (though later analyses suggest lower).",
+    "gold_source_id": "nlp-legal-survey-2410.21306",
+    "gold_page": 8,
+    "evidence_quote": "Uniform Bar Exam near the 90th percentile"
+  },
+  {
+    "id": "q18",
+    "split": "dev",
+    "question": "How many languages do the datasets and large corpora discussed in the survey cover?",
+    "expected_answer": "24 languages.",
+    "gold_source_id": "nlp-legal-survey-2410.21306",
+    "gold_page": 4,
+    "evidence_quote": "By discussing datasets and large corpora in 24 languages"
+  },
+  {
+    "id": "q19",
+    "split": "dev",
+    "question": "Which benchmark suite assesses NLP models across several legal tasks such as ECHR, SCOTUS and LEDGAR?",
+    "expected_answer": "LexGLUE (Legal General Language Understanding Evaluation).",
+    "gold_source_id": "nlp-legal-survey-2410.21306",
+    "gold_page": 22,
+    "evidence_quote": "the Legal General Language Understanding Evaluation (LexGLUE) benchmark"
+  },
+  {
+    "id": "q20",
+    "split": "dev",
+    "question": "Which legal corpus contains 258,146 cases from UK courts dating back to the 16th century?",
+    "expected_answer": "The Cambridge Law Corpus (CLC).",
+    "gold_source_id": "nlp-legal-survey-2410.21306",
+    "gold_page": 23,
+    "evidence_quote": "the Cambridge Law Corpus (CLC), a legal dataset featuring 258,146 cases from UK"
+  },
+  {
+    "id": "q21",
+    "split": "dev",
+    "question": "In the Indian legal NLP survey, how many Supreme Court judgements were used to find similar cases in the FIRE 2019 dataset?",
+    "expected_answer": "2,914 Supreme Court judgements (50 text description queries).",
+    "gold_source_id": "legal-nlp-india-survey-2107.06056",
+    "gold_page": 13,
+    "evidence_quote": "set of 2914 supreme court judgements.",
+    "filter": {
+      "document_id": "legal-nlp-india-survey-2107.06056"
+    }
+  },
+  {
+    "id": "q22",
+    "split": "dev",
+    "question": "In the Indian legal NLP survey's summarisation work, who created the summaries of Supreme Court judgements from 1950 to 1994?",
+    "expected_answer": "Lawyers, while publishing.",
+    "gold_source_id": "legal-nlp-india-survey-2107.06056",
+    "gold_page": 7,
+    "evidence_quote": "Court judgements from 1950 to 1994 used to have",
+    "filter": {
+      "document_id": "legal-nlp-india-survey-2107.06056",
+      "section": "summary_generation"
+    }
+  },
+  {
+    "id": "q23",
+    "split": "test",
+    "question": "According to the survey, when later analyses re-examined GPT-4's performance, what percentile was suggested?",
+    "expected_answer": "About the 48th percentile overall and 15th percentile on essays.",
+    "gold_source_id": "nlp-legal-survey-2410.21306",
+    "gold_page": 8,
+    "evidence_quote": "possibly around the 48th percentile\noverall and 15th percentile on essays"
+  },
+  {
+    "id": "q24",
+    "split": "test",
+    "question": "In the Indian legal NLP survey's reasoning tasks, what does predicting relevant acts based on case facts return for a description of a theft?",
+    "expected_answer": "Section 378 under the Indian Penal Code.",
+    "gold_source_id": "legal-nlp-india-survey-2107.06056",
+    "gold_page": 15,
+    "evidence_quote": "Predicting the relevant act of the law based on",
+    "filter": {
+      "document_id": "legal-nlp-india-survey-2107.06056",
+      "section": "reasoning"
+    }
+  },
+  {
+    "id": "q25",
+    "split": "test",
+    "question": "In the Indian legal NLP survey's case-similarity section, how is finding similar cases currently described?",
+    "expected_answer": "It is manual; many commercial tools rely on keyword-based or act-based similarities.",
+    "gold_source_id": "legal-nlp-india-survey-2107.06056",
+    "gold_page": 13,
+    "evidence_quote": "This activity is manual and a lot of",
+    "filter": {
+      "document_id": "legal-nlp-india-survey-2107.06056",
+      "section": "case_similarity"
+    }
+  },
+  {
+    "id": "q26",
+    "split": "test",
+    "question": "Which dataset for refugee law spans documents from 1996 to 2022?",
+    "expected_answer": "AsyLex (59,112 documents from Canadian refugee status determinations).",
+    "gold_source_id": "nlp-legal-survey-2410.21306",
+    "gold_page": 23,
+    "evidence_quote": "a pioneering dataset tailored for refugee law applications, featuring 59,112 documents"
+  },
+  {
+    "id": "q27",
+    "split": "test",
+    "question": "Which benchmark for evaluating language models on legal NLP covers 11 datasets in 24 languages?",
+    "expected_answer": "LEXTREME.",
+    "gold_source_id": "nlp-legal-survey-2410.21306",
+    "gold_page": 23,
+    "evidence_quote": "a multilingual benchmark for evaluating LMs on legal NLP tasks"
+  }
+]
